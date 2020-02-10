@@ -4,11 +4,11 @@ const bcrypt = require('bcrypt');
 class UserService {
   constructor() {
     this._collection = 'users';
-    this._mongoLib = new MongoLib(this._collection);
+    this._mongoLib = new MongoLib();
   }
 
   async getUser(email) {
-    const [user] = this._mongoLib.getAll(this._collection, { email });
+    const [user] = await this._mongoLib.getAll(this._collection, { email });
     return user;
   }
 
