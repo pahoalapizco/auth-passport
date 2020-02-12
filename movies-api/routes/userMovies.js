@@ -1,4 +1,6 @@
 const express = require('express');
+const passport = require('passport');
+
 const UserMovieService = require('../services/userMovie');
 
 const validationHandler = require('../utils/middleware/validationHandler');
@@ -9,6 +11,9 @@ const {
   userMovieCreateSchema
 } = require('../utils/schemas/userMovie');
 
+// JWT strategy
+require('../utils/auth/strategies/jwt');
+
 function userMovieApi(app) {
   const router = express.Router();
   const userMoviesSerivice = new UserMovieService();
@@ -17,6 +22,7 @@ function userMovieApi(app) {
 
   router.get(
     '/',
+    passport.authenticate('jwt', { session: false }),
     validationHandler({ userId: userIdSchema }, 'query'),
     async (req, res, next) => {
       const { userId } = req.query;
@@ -35,6 +41,7 @@ function userMovieApi(app) {
 
   router.post(
     '/',
+    passport.authenticate('jwt', { session: false }),
     validationHandler(userMovieCreateSchema),
     async (req, res, next) => {
       const { body: userMovie } = req;
@@ -55,6 +62,7 @@ function userMovieApi(app) {
 
   router.delete(
     '/:userMovieId',
+    passport.authenticate('jwt', { session: false }),
     validationHandler(userMovieIdSchema),
     async (req, res, next) => {
       const { userMovieId } = req.params;
