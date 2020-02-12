@@ -3,6 +3,7 @@ const express = require('express');
 const { config } = require('./config/');
 const moviesApi = require('./routes/movies');
 const userMovieApi = require('./routes/userMovies');
+const authApi = require('./routes/auth');
 
 const {
   logError,
@@ -16,6 +17,7 @@ const app = express();
 // body parser
 app.use(express.json());
 
+authApi(app);
 moviesApi(app);
 userMovieApi(app);
 
