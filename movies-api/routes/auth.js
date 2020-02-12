@@ -3,19 +3,25 @@ const passport = require('passport');
 const boom = require('@hapi/boom');
 const jwt = require('jsonwebtoken');
 
+// Servicios
 const ApiKeysService = require('../services/apiKeys');
+const UserService = require('../services/user');
+
 const { config } = require('../config');
+const validationHandler = require('../utils/middleware/validationHandler');
+const { userCreateSchema } = require('../utils/schemas/users');
 
 // Basic strategy
 require('../utils/auth/strategies/basic');
 
 function authApi(app) {
   const router = express.Router();
-  app.use('/api/auth/login', router);
+  app.use('/api/auth', router);
 
   const apiKeysService = new ApiKeysService();
+  const userService = new UserService();
 
-  router.post('/', async (req, res, next) => {
+  router.post('/sing-in', async (req, res, next) => {
     const { apiKeyToken } = req.body;
     
     if (!apiKeyToken) next(boom.unauthorized('API Key es requerido'));
@@ -52,6 +58,21 @@ function authApi(app) {
         next(error);
       }
     })(req, res, next);
+  });
+
+  router.post('/sing-up', validationHandler(userCreateSchema), async (req, res, next) => {
+    const { body: user } = req;
+
+    try {
+      const createdUserId = await userService.createUser(user);
+
+      res.status(201).json({
+        data: createdUserId,
+        message: 'user created'
+      });
+    } catch (error) {
+      next(error);
+    }
   });
 }
 

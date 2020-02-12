@@ -12,16 +12,28 @@ const userCreateSchema = {
   name: joi
     .string()
     .max(100)
-    .required(),
+    .required()
+    .error(
+      new Error('userCreateSchema:name has an error')
+    ),
   email: joi
     .string()
     .email()
-    .required(),
+    .required()
+    .error(
+      new Error('userCreateSchema:email has an error')
+    ),
   password: joi
     .string()
     .min(8)
-    .required(),
+    .required()
+    .error(
+      new Error('userCreateSchema:password has an error')
+    ),
   isAdmin: joi.boolean()
+  .error(
+    new Error('userCreateSchema:isAdmin has an error')
+  )
 };
 
 module.exports = {
