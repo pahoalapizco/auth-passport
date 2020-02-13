@@ -67,12 +67,12 @@ function userMovieApi(app) {
     '/:userMovieId',
     passport.authenticate('jwt', { session: false }),
     scopesValidationHandler(['delete:user-movies']),
-    validationHandler(userMovieIdSchema),
+    validationHandler({ userMovieId: userMovieIdSchema }, 'params'),
     async (req, res, next) => {
       const { userMovieId } = req.params;
       try {
         const deletedUserMovieId = await userMoviesSerivice.deleteUserMovie(
-          userMovieId
+          { userMovieId }
         );
 
         res.status(200).json({

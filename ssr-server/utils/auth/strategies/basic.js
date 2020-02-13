@@ -6,7 +6,7 @@ const axios = require("axios");
 const { config } = require("../../../config");
 
 // Definición de una estrategia de autenticación:
-passport.unuse(
+passport.use(
   new BasicStrategy(async function(email, password, cb) {
     try {
       const { data, status } = await axios({
